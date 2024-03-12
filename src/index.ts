@@ -1,18 +1,28 @@
-import express from 'express';
-// import cors from 'cors';
-require(`dotenv`).config();
+import express, { Express, Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
+import { PORT } from './secrets';
+import{rootRouter} from './routes/index'
 
-const app = express();
+const app: Express = express();
+app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
 
-    res.send(`working`);
+    res.json({
+        message: "Welcome to the working prisma typescript API"
+    });
 
 });
 
-let port = process.env.PORT
+export const prismaClient = new PrismaClient({
+    log: ['query']
+})
 
+app.use('/api', rootRouter)
+
+
+let port = PORT
 
 app.listen(port, () => {
-    console.log(`listening on port` + `${port}`);
+    console.log(`listening on port ${port}`);
 });
